@@ -23,6 +23,13 @@ class User extends Authenticatable
         'password',
     ];
 
+    public $timestamps = false;
+
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
     /**
      * The attributes that should be hidden for serialization.
      *
