@@ -1,7 +1,8 @@
 <?php
 
+use App\Models\Client;
 use App\Models\Evenement;
-use App\Models\Type;
+use App\Models\Statut;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,11 +14,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('type_evenement', function (Blueprint $table) {
+        Schema::create('reservations', function (Blueprint $table) {
+            $table->id();
+            $date = new DateTime('now');
+            $table->dateTime('date_res')->default($date->format('Y-m-d H:i:s'));
+            $table->integer('nb_billets');
+            $table->decimal('montant', 8, 2);
+            $table->foreignIdFor(Statut::class)->constrained()
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
             $table->foreignIdFor(Evenement::class)->constrained()
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
-            $table->foreignIdFor(Type::class)->constrained()
+            $table->foreignIdFor(Client::class)->constrained()
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
         });
@@ -28,6 +37,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('type_evenement');
+        Schema::dropIfExists('reservations');
     }
 };

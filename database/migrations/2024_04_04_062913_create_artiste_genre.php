@@ -14,10 +14,10 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('artiste_genre', function (Blueprint $table) {
-            $table->foreignId(Artiste::class)->constrained()
+            $table->foreignIdFor(Artiste::class)->constrained()
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
-            $table->foreignId(Genre::class)->constrained()
+            $table->foreignIdFor(Genre::class)->constrained()
                 ->onDelete('cascade')
                 ->onUpdate('cascade');
         });

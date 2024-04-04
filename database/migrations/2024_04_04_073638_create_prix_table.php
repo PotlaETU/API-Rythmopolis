@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Evenement;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -11,14 +12,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('lieux', function (Blueprint $table) {
+        Schema::create('prix', function (Blueprint $table) {
             $table->id();
-            $table->string('nom', 50);
-            $table->string('adresse', 100);
-            $table->string('code_postal', 6);
-            $table->string('ville', 50);
-            $table->float('lat');
-            $table->float('long');
+            $table->string('categorie');
+            $table->integer('nombre');
+            $table->decimal('valeur', 8, 2);
+            $table->foreignIdFor(Evenement::class)->constrained()
+                ->onUpdate('cascade')
+                ->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -28,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('lieu');
+        Schema::dropIfExists('prix');
     }
 };

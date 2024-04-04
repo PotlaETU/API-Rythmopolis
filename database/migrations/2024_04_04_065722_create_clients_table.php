@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('adresse');
             $table->string('code_postal', 6);
             $table->string('ville', 50);
-            $table->foreignId(User::class)->constrained()
+            $table->foreignIdFor(User::class)->constrained()
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
         });
