@@ -2,21 +2,17 @@
 
 namespace Database\Seeders;
 
-use App\Models\Genre;
+use App\Models\Artiste;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class GenreSeeder extends Seeder
+class ArtistesSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        foreach (Genre::GENRES as $genre) {
-            Genre::create([
-                'nom' => $genre
-            ]);
-        }
+        Artiste::factory(10)->create();
     }
 }

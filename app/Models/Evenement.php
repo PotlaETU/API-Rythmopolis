@@ -10,7 +10,6 @@ class Evenement extends Model
     use HasFactory;
 
     public $timestamps = false;
-
     protected $fillable = ['titre', 'description', 'date_event', 'lieu_id'];
 
     public function types(){

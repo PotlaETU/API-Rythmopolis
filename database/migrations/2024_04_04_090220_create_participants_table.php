@@ -1,7 +1,7 @@
 <?php
 
+use App\Models\Artiste;
 use App\Models\Evenement;
-use App\Models\Type;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -13,13 +13,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('type_evenement', function (Blueprint $table) {
+        Schema::create('participants', function (Blueprint $table) {
             $table->foreignIdFor(Evenement::class)->constrained()
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
-            $table->foreignIdFor(Type::class)->constrained()
+            $table->foreignIdFor(Artiste::class)->constrained()
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
+            $table->timestamps();
         });
     }
 
@@ -28,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('type_evenement');
+        Schema::dropIfExists('participants');
     }
 };

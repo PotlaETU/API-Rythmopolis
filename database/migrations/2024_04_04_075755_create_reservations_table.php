@@ -20,9 +20,7 @@ return new class extends Migration
             $table->dateTime('date_res')->default($date->format('Y-m-d H:i:s'));
             $table->integer('nb_billets');
             $table->decimal('montant', 8, 2);
-            $table->foreignIdFor(Statut::class)->constrained()
-                ->onUpdate('cascade')
-                ->onDelete('cascade');
+            $table->string('statut')->default(Statut::EN_ATTENTE);
             $table->foreignIdFor(Evenement::class)->constrained()
                 ->onUpdate('cascade')
                 ->onDelete('cascade');

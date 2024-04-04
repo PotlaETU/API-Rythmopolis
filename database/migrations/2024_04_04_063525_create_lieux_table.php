@@ -19,7 +19,6 @@ return new class extends Migration
             $table->string('ville', 50);
             $table->float('lat');
             $table->float('long');
-            $table->timestamps();
         });
     }
 
@@ -28,6 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('lieu');
+        Schema::dropIfExists('lieux');
     }
 };
