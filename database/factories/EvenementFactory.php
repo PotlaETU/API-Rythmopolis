@@ -22,7 +22,7 @@ class EvenementFactory extends Factory
             'titre' => $this->faker->randomElement(Type::TYPES),
             'description' => $this->faker->paragraph(),
             'date_event' => $this->faker->dateTimeBetween('-3 months', '+3months'),
-            'lieu_id' => Lieux::factory(),
+            'lieu_id' => Lieux::all()->random()->id,
         ];
     }
 }

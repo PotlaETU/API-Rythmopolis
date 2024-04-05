@@ -2,14 +2,14 @@
 
 namespace Database\Factories;
 
-use App\Models\Prix;
-use App\Models\Reservation;
+use App\Models\Artiste;
+use App\Models\Evenement;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * @extends \Illuminate\Database\Eloquent\Factories\Factory<\App\Models\Model>
  */
-class BilletFactory extends Factory
+class ParticipantFactory extends Factory
 {
     /**
      * Define the model's default state.
@@ -18,12 +18,9 @@ class BilletFactory extends Factory
      */
     public function definition(): array
     {
-        $reservation = Reservation::all()->random();
-        $prix = Prix::where('evenement_id', $reservation->evenement_id)->first();
         return [
-            'quantite' => $reservation->nb_billets,
-            'prix_id' => $prix->id,
-            'reservation_id' => $reservation->id,
+            'evenement_id' => $this->faker->randomElement(Evenement::all())->first(),
+            'artiste_id' => $this->faker->randomElement(Artiste::all())->first()
         ];
     }
 }

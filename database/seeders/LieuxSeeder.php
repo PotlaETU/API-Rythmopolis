@@ -2,21 +2,17 @@
 
 namespace Database\Seeders;
 
-use App\Models\Type;
+use App\Models\Lieux;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class TypeSeeder extends Seeder
+class LieuxSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        foreach (Type::TYPES as $type) {
-            Type::create([
-                'nom' => $type
-            ]);
-        }
+        Lieux::factory(20)->create();
     }
 }

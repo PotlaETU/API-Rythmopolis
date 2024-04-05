@@ -12,14 +12,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('billets', function (Blueprint $table) {
-            $table->foreignId('quantite')->primary()->constrained('reservations');
+            $table->integer('quantite');
             $table->foreignId('prix_id')->constrained('prix')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
             $table->foreignId('reservation_id')->constrained('reservations')
                 ->onUpdate('cascade')
                 ->onDelete('cascade');
-            $table->timestamps();
         });
     }
 

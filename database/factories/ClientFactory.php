@@ -24,7 +24,6 @@ class ClientFactory extends Factory
             'adresse' => $this->faker->streetAddress(),
             'code_postal' => $this->faker->postcode(),
             'ville' => $this->faker->city(),
-            'user_id' => User::factory()
         ];
     }
 }

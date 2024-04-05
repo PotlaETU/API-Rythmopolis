@@ -16,15 +16,13 @@ class ClientSeeder extends Seeder
      */
     public function run(): void
     {
-        $roleAdmin = Role::where('nom', Role::ADMIN)->first();
-        $roleActif = Role::where('nom', Role::ACTIF)->first();
-
         $robert = User::create([
             'name' => "Robert Duchmol",
             'email' => "robert.duchmol@domain.fr",
             'email_verified_at' => now(),
             'password' => Hash::make('GrosSecret'),
             'remember_token' => Str::random(10),
+            'role' => Role::ADMIN
         ]);
         Client::factory()->create([
             'nom' => "Duchmol",
@@ -35,7 +33,6 @@ class ClientSeeder extends Seeder
             'ville' => "Lens",
             'user_id' => $robert->id
         ]);
-        $robert->roles()->attach([$roleAdmin->id, $roleActif->id]);
         $robert->save();
 
         $clients = Client::factory(10)->make();
@@ -47,7 +44,6 @@ class ClientSeeder extends Seeder
                 'password' => Hash::make('password'),
                 'remember_token' => Str::random(10),
             ]);
-            $user->roles()->attach($roleActif->id);
             $client->user_id = $user->id;
             $client->save();
         }
