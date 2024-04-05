@@ -16,9 +16,9 @@ return new class extends Migration
             $table->id();
             $table->string('nom', 50);
             $table->string('prenom', 50);
-            $table->string('avatar');
+            $table->string('avatar')->default('https://randomuser.me/api/portraits');
             $table->string('adresse');
-            $table->string('code_postal', 6);
+            $table->string('code_postal');
             $table->string('ville', 50);
             $table->foreignIdFor(User::class)->constrained()
                 ->onUpdate('cascade')
