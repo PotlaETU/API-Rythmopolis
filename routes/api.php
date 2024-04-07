@@ -28,3 +28,5 @@ Route::get('profil',[ClientController::class, 'profil'])->middleware('auth:api',
 Route::get('clients', [ClientController::class, 'index'])->middleware('auth:api', 'checkUserRole:gestionnaire');
 
 Route::get('clients/{id}', [ClientController::class, 'show'])->middleware('auth:api', 'checkUserRole:gestionnaire');
+
+Route::put('clients/{id}', [ClientController::class, 'update'])->middleware('auth:api', 'checkUserRole:gestionnaire');
