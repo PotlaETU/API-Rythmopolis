@@ -60,4 +60,24 @@ class ClientController extends Controller
             'clients' => $clients
         ]);
     }
+
+    public function show($id)
+    {
+        $client = Client::find($id);
+        if($client){
+            $user = $client->user()->first();
+            $reservation = $client->reservations()->get();
+            return response()->json([
+                'status' => 'success',
+                'client' => $client,
+                'user' => $user,
+                'reservation' => $reservation
+            ]);
+        }else{
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Client not found'
+            ], 404);
+        }
+    }
 }
