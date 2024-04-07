@@ -15,13 +15,25 @@ class CheckUserRole
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next, string ...$role): Response
     {
-        if ($request->user()->role === Role::NON_ACTIF) {
+        $userRole = Auth::user()->role;
+
+        if($userRole == Role::NON_ACTIF)
+            return response()->json(['message' => 'Unauthorized'], 401);
+
+        if($userRole == Role::ADMIN)
             return $next($request);
+
+        foreach ($role as $r) {
+            if ($r == Role::ADMIN && $userRole != Role::ADMIN) {
+                return response()->json(['message' => 'Unauthorized'], 401);
+            }
+
+            if ($userRole == $r || ($userRole == Role::GESTIONNAIRE && $r != Role::ADMIN)) {
+                return $next($request);
+            }
         }
-        throw new \HttpResponseException(response()->json(json_encode([
-            'message' => "The user {$request->user()->name} can't access to this endpoint"
-        ]), RESPONSE::HTTP_FORBIDDEN));
+        return response()->json(['message' => 'Unauthorized'], 401);
     }
 }
