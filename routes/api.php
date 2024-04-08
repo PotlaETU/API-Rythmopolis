@@ -3,6 +3,7 @@
 use App\Http\Controllers\api\AuthController;
 use App\Http\Controllers\api\ClientController;
 use App\Http\Controllers\api\EvenementController;
+use App\Http\Controllers\api\LieuController;
 use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -44,3 +45,5 @@ Route::put('evenements/{id}', [EvenementController::class, 'update'])->middlewar
 Route::put('evenements/{id}/updateParticipants', [EvenementController::class, 'updateParticipants'])->middleware('auth:api', 'checkUserRole:'.Role::GESTIONNAIRE);
 
 Route::get('evenements/{id}/prix', [EvenementController::class, 'indexPrix'])->middleware('auth:api', 'checkUserRole:'.Role::ACTIF);
+
+Route::get('lieux', [LieuController::class, 'index'])->middleware('auth:api', 'checkUserRole');
