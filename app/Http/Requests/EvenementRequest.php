@@ -30,7 +30,10 @@ class EvenementRequest extends FormRequest
             'description' => 'required|string|max:255',
             'date_event' => 'required|date',
             'lieu_id' => 'required|exists:lieux,id',
-            'artistes' => 'array',
+            'artistes.*' => 'exists:artistes,id',
+            'prix.*.categorie' => 'sometimes|required|string',
+            'prix.*.nombre' => 'sometimes|required|numeric',
+            'prix.*.valeur' => 'sometimes|required|numeric',
         ];
     }
 
