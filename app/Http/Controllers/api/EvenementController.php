@@ -148,4 +148,32 @@ class EvenementController extends Controller
             'prix' => $prix,
         ]);
     }
+
+    public function updatePrix(Request $request, $id, $idPrix){
+        $request->validate([
+            'categorie' => 'string|max:50',
+            'nombre' => 'numeric',
+            'valeur' => 'numeric',
+        ]);
+
+        $evenement = Evenement::find($id);
+        $prix = $evenement->prix()->find($idPrix);
+
+        if($prix) {
+            $prix->categorie = $request->categorie ?? $prix->categorie;
+            $prix->nombre = $request->nombre ?? $prix->nombre;
+            $prix->valeur = $request->valeur ?? $prix->valeur;
+            $prix->save();
+            return response()->json([
+                'status' => 'success',
+                'prix' =>$prix,
+            ]);
+        }
+        else {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Prix not found',
+            ], 404);
+        }
+    }
 }

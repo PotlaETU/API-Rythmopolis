@@ -47,3 +47,5 @@ Route::put('evenements/{id}/updateParticipants', [EvenementController::class, 'u
 Route::get('evenements/{id}/prix', [EvenementController::class, 'indexPrix'])->middleware('auth:api', 'checkUserRole:'.Role::ACTIF);
 
 Route::get('lieux', [LieuController::class, 'index'])->middleware('auth:api', 'checkUserRole');
+
+Route::put('evenements/{id}/prix/{idPrix}', [EvenementController::class, 'updatePrix'])->middleware('auth:api', 'checkUserRole:'.Role::GESTIONNAIRE);
