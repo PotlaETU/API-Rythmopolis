@@ -33,3 +33,5 @@ Route::get('clients/{id}', [ClientController::class, 'show'])->middleware('auth:
 Route::put('clients/{id}', [ClientController::class, 'update'])->middleware('auth:api', 'checkUserRole:gestionnaire');
 
 Route::get('evenements', [EvenementController::class, 'index'])->middleware('auth:api');
+
+Route::get('evenements/{id}', [EvenementController::class, 'show'])->middleware('auth:api', 'checkUserRole');
