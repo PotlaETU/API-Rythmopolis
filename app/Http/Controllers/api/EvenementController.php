@@ -3,11 +3,15 @@
 namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\EvenementRequest;
 use App\Models\Evenement;
 use App\Models\Prix;
 use App\Models\Role;
 use App\Models\Statut;
+use App\Models\Type;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 class EvenementController extends Controller
 {
@@ -57,6 +61,32 @@ class EvenementController extends Controller
             'status' => 'success',
             'evenement' => $evenement,
             'prix_disponibles' => $prix_disponibles,
+        ]);
+    }
+
+    public function store(EvenementRequest $request){
+
+        $evenement = new Evenement();
+        $evenement->titre = $request->titre;
+        $evenement->description = $request->description;
+        $evenement->date_event = $request->date_event;
+        $evenement->lieu_id = $request->lieu_id;
+        $evenement->save();
+
+        if($request->has('artistes')){
+            foreach ($request->artistes as $artiste) {
+                DB::table('participants')->insert([
+                    'evenement_id' => $evenement->id,
+                    'artiste_id' => $artiste,
+                ]);
+            }
+        }
+
+        $evenement->load(['lieu', 'artistes']);
+
+        return response()->json([
+            'status' => 'success',
+            'evenement' => $evenement,
         ]);
     }
 }
