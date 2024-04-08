@@ -4,6 +4,7 @@ use App\Http\Controllers\api\AuthController;
 use App\Http\Controllers\api\ClientController;
 use App\Http\Controllers\api\EvenementController;
 use App\Http\Controllers\api\LieuController;
+use App\Http\Controllers\api\ReservationController;
 use App\Models\Role;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -51,3 +52,5 @@ Route::get('lieux', [LieuController::class, 'index'])->middleware('auth:api', 'c
 Route::put('evenements/{id}/prix/{idPrix}', [EvenementController::class, 'updatePrix'])->middleware('auth:api', 'checkUserRole:'.Role::GESTIONNAIRE);
 
 Route::delete('evenements/{id}', [EvenementController::class, 'destroy'])->middleware('auth:api', 'checkUserRole:'.Role::ADMIN);
+
+Route::get('reservations/client', [ReservationController::class, 'index'])->middleware('auth:api', 'checkUserRole');
