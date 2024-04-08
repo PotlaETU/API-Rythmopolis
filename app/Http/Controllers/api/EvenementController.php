@@ -4,7 +4,9 @@ namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
 use App\Models\Evenement;
+use App\Models\Prix;
 use App\Models\Role;
+use App\Models\Statut;
 use Illuminate\Http\Request;
 
 class EvenementController extends Controller
@@ -36,5 +38,25 @@ class EvenementController extends Controller
             'evenements' => $evenements,
         ]);
 
+    }
+
+    public function show($id){
+        $evenement = Evenement::with(['lieu', 'artistes' => function ($query){
+            $query->orderBy('id', 'asc');
+        }])->find($id);
+
+        $prix_disponibles = Prix::select('prix.*')
+            ->where('prix.evenement_id', $id)
+            ->whereNotIn('prix.id', function($query) {
+                $query->select('billets.prix_id')
+                    ->from('billets');
+            })
+            ->get();
+
+        return response()->json([
+            'status' => 'success',
+            'evenement' => $evenement,
+            'prix_disponibles' => $prix_disponibles,
+        ]);
     }
 }

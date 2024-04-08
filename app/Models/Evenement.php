@@ -23,4 +23,12 @@ class Evenement extends Model
     public function lieu(){
         return $this->belongsTo(Lieux::class);
     }
+
+    public function prix(){
+        return $this->hasMany(Prix::class);
+    }
+
+    public function reservations(){
+        return $this->hasMany(Reservation::class);
+    }
 }
