@@ -19,4 +19,8 @@ class Evenement extends Model
     public function artistes(){
         return $this->belongsToMany(Artiste::class, 'participants');
     }
+
+    public function lieu(){
+        return $this->belongsTo(Lieux::class);
+    }
 }

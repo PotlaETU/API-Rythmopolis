@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\api\AuthController;
 use App\Http\Controllers\api\ClientController;
+use App\Http\Controllers\api\EvenementController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -30,3 +31,5 @@ Route::get('clients', [ClientController::class, 'index'])->middleware('auth:api'
 Route::get('clients/{id}', [ClientController::class, 'show'])->middleware('auth:api', 'checkUserRole:gestionnaire');
 
 Route::put('clients/{id}', [ClientController::class, 'update'])->middleware('auth:api', 'checkUserRole:gestionnaire');
+
+Route::get('evenements', [EvenementController::class, 'index'])->middleware('auth:api');
