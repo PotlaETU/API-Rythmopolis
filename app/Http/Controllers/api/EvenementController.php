@@ -114,4 +114,19 @@ class EvenementController extends Controller
             'evenement' => $evenement,
         ]);
     }
+
+    public function updateParticipants(Request $request, $id){
+        $request->validate([
+            'artistes' => 'required|array',
+            'artistes.*' => 'exists:artistes,id',
+        ]);
+
+        $evenement = Evenement::find($id);
+        $evenement->artistes()->sync($request->artistes);
+
+        return response()->json([
+            'status' => 'success',
+            'evenement' => $evenement->artistes()->get(),
+        ]);
+    }
 }

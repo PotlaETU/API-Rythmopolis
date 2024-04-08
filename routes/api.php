@@ -39,3 +39,5 @@ Route::get('evenements/{id}', [EvenementController::class, 'show'])->middleware(
 Route::post('evenements', [EvenementController::class, 'store'])->middleware('auth:api', 'checkUserRole:gestionnaire');
 
 Route::put('evenements/{id}', [EvenementController::class, 'update'])->middleware('auth:api', 'checkUserRole:gestionnaire');
+
+Route::put('evenements/{id}/updateParticipants', [EvenementController::class, 'updateParticipants'])->middleware('auth:api', 'checkUserRole:gestionnaire');
