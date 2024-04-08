@@ -49,3 +49,5 @@ Route::get('evenements/{id}/prix', [EvenementController::class, 'indexPrix'])->m
 Route::get('lieux', [LieuController::class, 'index'])->middleware('auth:api', 'checkUserRole');
 
 Route::put('evenements/{id}/prix/{idPrix}', [EvenementController::class, 'updatePrix'])->middleware('auth:api', 'checkUserRole:'.Role::GESTIONNAIRE);
+
+Route::delete('evenements/{id}', [EvenementController::class, 'destroy'])->middleware('auth:api', 'checkUserRole:'.Role::ADMIN);

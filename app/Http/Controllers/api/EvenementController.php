@@ -176,4 +176,14 @@ class EvenementController extends Controller
             ], 404);
         }
     }
+
+    public function destroy($id){
+        $evenement = Evenement::find($id);
+        $evenement->delete();
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Evenement deleted',
+        ]);
+    }
 }
