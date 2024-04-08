@@ -100,4 +100,18 @@ class EvenementController extends Controller
             'evenement' => $evenement,
         ]);
     }
+
+    public function update(Request $request, $id){
+        $evenement = Evenement::find($id);
+        $evenement->titre = $request->titre ?? $evenement->titre;
+        $evenement->description = $request->description ?? $evenement->description;
+        $evenement->date_event = $request->date_event ?? $evenement->date_event;
+        $evenement->lieu_id = $request->lieu_id ?? $evenement->lieu_id;
+        $evenement->save();
+
+        return response()->json([
+            'status' => 'success',
+            'evenement' => $evenement,
+        ]);
+    }
 }
