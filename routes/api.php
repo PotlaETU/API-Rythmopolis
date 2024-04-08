@@ -53,4 +53,6 @@ Route::put('evenements/{id}/prix/{idPrix}', [EvenementController::class, 'update
 
 Route::delete('evenements/{id}', [EvenementController::class, 'destroy'])->middleware('auth:api', 'checkUserRole:'.Role::ADMIN);
 
-Route::get('reservations/client', [ReservationController::class, 'index'])->middleware('auth:api', 'checkUserRole');
+Route::get('reservations/client', [ReservationController::class, 'reservationsClient'])->middleware('auth:api', 'checkUserRole');
+
+Route::get('reservations/evenement/{id}', [ReservationController::class, 'reservationsEvenement'])->middleware('auth:api', 'checkUserRole'.Role::GESTIONNAIRE);
