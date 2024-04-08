@@ -12,6 +12,7 @@ use App\Models\Type;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use function Laravel\Prompts\select;
 
 class EvenementController extends Controller
 {
@@ -127,6 +128,24 @@ class EvenementController extends Controller
         return response()->json([
             'status' => 'success',
             'evenement' => $evenement->artistes()->get(),
+        ]);
+    }
+
+    public function indexPrix(Request $request, $id){
+        $evenement = Evenement::find($id);
+        $query = $evenement->prix()->select('categorie', DB::raw('prix.nombre - COALESCE((SELECT SUM(quantite) FROM billets WHERE billets.prix_id = prix.id), 0) as nombre_places'));
+
+
+        if($request->has('categorie')){
+            $query->where('categorie', $request->categorie);
+        }
+
+        $prix = $query->get();
+
+
+        return response()->json([
+            'status' => 'success',
+            'prix' => $prix,
         ]);
     }
 }
