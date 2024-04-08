@@ -82,7 +82,18 @@ class EvenementController extends Controller
             }
         }
 
-        $evenement->load(['lieu', 'artistes']);
+        if ($request->has('prix')) {
+            foreach ($request->prix as $prixData) {
+                $prix = new Prix();
+                $prix->categorie = $prixData['categorie'];
+                $prix->nombre = $prixData['nombre'];
+                $prix->valeur = $prixData['valeur'];
+                $prix->evenement_id = $evenement->id;
+                $prix->save();
+            }
+        }
+
+        $evenement->load(['lieu', 'artistes', 'prix']);
 
         return response()->json([
             'status' => 'success',
