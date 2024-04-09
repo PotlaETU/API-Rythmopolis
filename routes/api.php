@@ -58,3 +58,5 @@ Route::get('reservations/client', [ReservationController::class, 'reservationsCl
 Route::get('reservations/evenement/{id}', [ReservationController::class, 'reservationsEvenement'])->middleware('auth:api', 'checkUserRole'.Role::GESTIONNAIRE);
 
 Route::post('evenements/{id}/reservation', [ReservationController::class, 'store'])->middleware('auth:api', 'checkUserRole:'.Role::ACTIF);
+
+Route::put('reservations/{id}', [ReservationController::class, 'update'])->middleware('auth:api', 'checkUserRole:'.Role::ACTIF);
