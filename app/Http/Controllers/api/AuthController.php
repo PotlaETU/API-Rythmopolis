@@ -12,8 +12,6 @@ use Illuminate\Support\Facades\Hash;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
 use OpenApi\Attributes as OA;
 
-
-#[OA\Info(version: "1.0", title: "API SAE G-10")]
 class AuthController extends Controller
 {
 

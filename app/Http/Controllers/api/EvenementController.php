@@ -15,14 +15,6 @@ use Illuminate\Validation\Rule;
 use function Laravel\Prompts\select;
 use OpenApi\Attributes as OA;
 
-#[OA\Tag(
-    name: "API SAE G-10",
-    description: "API pour la SAE"
-),
-    OA\Server(
-        url: "http://localhost:8000/api"
-    )]
-
 class EvenementController extends Controller
 {
     #[OA\Get(
