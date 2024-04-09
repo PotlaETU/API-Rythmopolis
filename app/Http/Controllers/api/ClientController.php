@@ -72,7 +72,22 @@ class ClientController extends Controller
         responses: [
             new OA\Response(
                 response: "200",
-                description: "Liste des clients",
+                content: new OA\MediaType(
+                    mediaType: "application/json",
+                    schema: new OA\Schema(
+                        properties: [
+                            new OA\Property(
+                                property: "status",
+                                type: "string"
+                            ),
+                            new OA\Property(
+                                property: "clients",
+                                type: "array",
+                                items: new OA\Items(ref: "#/components/schemas/Client")
+                            )
+                        ]
+                    )
+                ),
             ),
             new OA\Response(
                 response: "404",
@@ -129,7 +144,25 @@ class ClientController extends Controller
         responses: [
             new OA\Response(
                 response: "200",
-                description: "Client trouvé",
+                content: new OA\MediaType(
+                    mediaType: "application/json",
+                    schema: new OA\Schema(
+                        properties: [
+                            new OA\Property(
+                                property: "status",
+                                type: "string"
+                            ),
+                            new OA\Property(
+                                property: "client",
+                                ref: "#/components/schemas/Client"
+                            ),
+                            new OA\Property(
+                                property: "user",
+                                ref: "#/components/schemas/User"
+                            ),
+                        ]
+                    )
+                ),
             ),
             new OA\Response(
                 response: "404",
@@ -160,90 +193,45 @@ class ClientController extends Controller
     #[OA\Put(
         path: "/clients/{id}",
         description: "Mettre à jour le client",
-        tags: ["Client"],
-        parameters:[
-            new OA\Parameter(
-                name: "id",
-                description: "ID du client",
-                in: "path",
-                required: true,
-                schema: new OA\Schema(type: "integer")
-            ),
-            new OA\Parameter(
-                name: "nom",
-                description: "Nom du client",
-                in: "query",
-                required: false,
-                schema: new OA\Schema(type: "string")
-            ),
-            new OA\Parameter(
-                name: "prenom",
-                description: "Prénom du client",
-                in: "query",
-                required: false,
-                schema: new OA\Schema(type: "string")
-            ),
-            new OA\Parameter(
-                name: "avatar",
-                description: "Avatar du client",
-                in: "query",
-                required: false,
-                schema: new OA\Schema(type: "string")
-            ),
-            new OA\Parameter(
-                name: "adresse",
-                description: "Adresse du client",
-                in: "query",
-                required: false,
-                schema: new OA\Schema(type: "string")
-            ),
-            new OA\Parameter(
-                name: "code_postal",
-                description: "Code postal du client",
-                in: "query",
-                required: false,
-                schema: new OA\Schema(type: "string")
-            ),
-            new OA\Parameter(
-                name: "ville",
-                description: "Ville du client",
-                in: "query",
-                required: false,
-                schema: new OA\Schema(type: "string")
-            ),
-            new OA\Parameter(
-                name: "name",
-                description: "Nom de l'utilisateur",
-                in: "query",
-                required: false,
-                schema: new OA\Schema(type: "string")
-            ),
-            new OA\Parameter(
-                name: "email",
-                description: "Email de l'utilisateur",
-                in: "query",
-                required: false,
-                schema: new OA\Schema(type: "string")
-            ),
-            new OA\Parameter(
-                name: "password",
-                description: "Mot de passe de l'utilisateur",
-                in: "query",
-                required: false,
-                schema: new OA\Schema(type: "string")
-            ),
-            new OA\Parameter(
-                name: "role",
-                description: "Role de l'utilisateur",
-                in: "query",
-                required: false,
-                schema: new OA\Schema(type: "string")
+        requestBody: new OA\RequestBody(
+            description: "Données à mettre à jour",
+            required: true,
+            content: new OA\MediaType(
+                mediaType: "application/json",
+                schema: new OA\Schema(
+                    properties: [
+                        new OA\Property(
+                            property: "client",
+                            ref: "#/components/schemas/Client"
+                        ),
+                    ],
+                    type: "object"
+                )
             )
-        ],
+        ),
+        tags: ["Client"],
         responses: [
             new OA\Response(
                 response: "200",
-                description: "Client mis à jour",
+                content: new OA\MediaType(
+                    mediaType: "application/json",
+                    schema: new OA\Schema(
+                        properties: [
+                            new OA\Property(
+                                property: "status",
+                                type: "string"
+                            ),
+                            new OA\Property(
+                                property: "client",
+                                ref: "#/components/schemas/Client"
+                            ),
+                            new OA\Property(
+                                property: "user",
+                                ref: "#/components/schemas/User"
+                            )
+                        ]
+                    )
+                ),
             ),
             new OA\Response(
                 response: "404",

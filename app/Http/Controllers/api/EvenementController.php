@@ -262,8 +262,8 @@ class EvenementController extends Controller
         ]);
     }
 
-    #[OA\Get(
-        path: "/evenements/{id}",
+    #[OA\Put(
+        path: "/evenements/{id}/updateParticipants",
         description: "Récupère la liste des participants à un événement",
         tags: ["Evenements"],
         parameters:[
@@ -273,7 +273,7 @@ class EvenementController extends Controller
                 in: "path",
                 required: true,
                 schema: new OA\Schema(type: "integer", format: "int64")
-            )
+            ),
         ],
         responses: [
             new OA\Response(
@@ -302,7 +302,7 @@ class EvenementController extends Controller
     }
 
     #[OA\Get(
-        path: "/evenements/{id}",
+        path: "/evenements/{id}/prix",
         description: "Récupère la liste des prix d'un événement",
         tags: ["Evenements"],
         parameters:[
