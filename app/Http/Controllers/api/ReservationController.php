@@ -14,6 +14,7 @@ use App\Models\Role;
 use App\Models\Statut;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class ReservationController extends Controller
 {
@@ -194,5 +195,64 @@ class ReservationController extends Controller
             return response()->json(['error' => 'You can only modify reservations in the "En-attente" or "Payé" state.'], 403);
         }
 
+    }
+
+    public function statistiques(){
+        $reservations = Reservation::all();
+
+        $totalReservations = 0;
+        $totalPaid = 0;
+        $totalEdited = 0;
+        $reservationsByCategory = [];
+        $availableByCategory = [];
+
+        // Compter le nombre total de réservations, le nombre de réservations payées et éditées
+        foreach ($reservations as $reservation) {
+
+            $totalReservations += $reservation->nb_billets;
+            if ($reservation->statut == Statut::PAYE) {
+                $totalPaid += $reservation->nb_billets;
+            }
+            if ($reservation->statut == Statut::BILLET_EDITE) {
+                $totalEdited += $reservation->nb_billets;
+            }
+
+            // Compter le nombre de réservations par catégorie
+            foreach ($reservation->billets as $billet) {
+                $categorie = $billet->prix->categorie;
+
+                if (!isset($reservationsByCategory[$categorie])) {
+                    $reservationsByCategory[$categorie] = 0;
+                }
+                $reservationsByCategory[$categorie] += $reservation->nb_billets;
+
+                // Compter le nombre de places disponibles par catégorie
+                // Supposons que nous avons une méthode dans le modèle Evenement qui retourne le nombre total de places par catégorie
+                $totalPlaces = $reservation->evenement->getTotalPlacesByCategory($categorie);
+                $availableByCategory[$categorie] = $totalPlaces - $reservationsByCategory[$categorie];
+            }
+        }
+
+        // Calculer les pourcentages
+        $paidPercentage = $totalReservations > 0 ? ($totalPaid / $totalReservations) * 100 : 0;
+        $editedPercentage = $totalReservations > 0 ? ($totalEdited / $totalReservations) * 100 : 0;
+
+        // Compter le nombre de clients
+        $totalClients = Client::count();
+
+        // Retourner les résultats
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'total_reservations' => $totalReservations,
+                'total_paid' => $totalPaid,
+                'total_edited' => $totalEdited,
+                'paid_percentage' => $paidPercentage,
+                'edited_percentage' => $editedPercentage,
+                'reservations_by_category' => $reservationsByCategory,
+                'available_by_category' => $availableByCategory,
+                'total_clients' => $totalClients,
+            ]
+        ]);
     }
 }

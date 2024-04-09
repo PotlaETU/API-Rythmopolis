@@ -31,4 +31,14 @@ class Evenement extends Model
     public function reservations(){
         return $this->hasMany(Reservation::class);
     }
+
+    public function getTotalPlacesByCategory($categorie){
+        $total = 0;
+        foreach ($this->prix as $prix) {
+            if($prix->categorie == $categorie){
+                $total += $prix->quantite;
+            }
+        }
+        return $total;
+    }
 }
