@@ -12,8 +12,8 @@ use function Webmozart\Assert\Tests\StaticAnalysis\inArray;
 use OpenApi\Attributes as OA;
 
 #[OA\Tag(
-    name: "Salles",
-    description: "API pour les salles"
+    name: "API SAE G-10",
+    description: "API pour la SAE"
 ),
     OA\Server(
         url: "http://localhost:8000/api"
