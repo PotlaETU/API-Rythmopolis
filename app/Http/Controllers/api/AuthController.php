@@ -9,15 +9,71 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
+use OpenApi\Attributes\OpenApi;
 use PHPOpenSourceSaver\JWTAuth\Facades\JWTAuth;
+use OpenApi\Attributes as OA;
 
+
+#[OA\Info(version: "1.0", title: "API SAE G-10")]
 class AuthController extends Controller
 {
+
+
     public function __construct()
     {
         $this->middleware('auth:api', ['except' => ['login', 'register']]);
     }
 
+    #[OA\Post(
+        path: "/login",
+        description: "Connecte un utilisateur",
+        requestBody: new OA\RequestBody(
+            description: "Les informations de connexion de l'utilisateur",
+            content: new OA\MediaType(
+                mediaType: "application/json",
+                schema: new OA\Schema(
+                    required: ["email", "password"],
+                    properties: [
+                        new OA\Property(
+                            property: "email",
+                            description: "Adresse email de l'utilisateur",
+                            type: "string"
+                        ),
+                        new OA\Property(
+                            property: "password",
+                            description: "Mot de passe de l'utilisateur",
+                            type: "string"
+                        )
+                    ],
+                    type: "object"
+                )
+            )
+        ),
+        tags: ["Authentification"],
+        responses: [
+            new OA\Response(
+                response: "200",
+                description: "Utilisateur connecté",
+                content: new OA\MediaType(
+                    mediaType: "application/json",
+                    schema: new OA\Schema(
+                        properties: [
+                            new OA\Property(
+                                property: "token",
+                                description: "Jeton d'authentification JWT",
+                                type: "string"
+                            )
+                        ],
+                        type: "object"
+                    )
+                )
+            ),
+            new OA\Response(
+                response: "401",
+                description: "Non autorisé"
+            )
+        ]
+    )]
     public function login(Request $request)
     {
         $request->validate([
@@ -44,7 +100,71 @@ class AuthController extends Controller
         ]);
     }
 
-    public function register(Request $request){
+    #[OA\Post(
+        path: "/register",
+        description: "Enregistre un nouvel utilisateur",
+        requestBody: new OA\RequestBody(
+            description: "Les informations de connexion de l'utilisateur",
+            required: true,
+            content: new OA\MediaType(
+                mediaType: "application/json",
+                schema: new OA\Schema(
+                    required: ["nom", "prenom", "adresse", "code_postal","ville","email", "password"],
+                    properties: [
+                        new OA\Property(
+                            property: "nom",
+                            description: "Nom de l'utilisateur",
+                            type: "string"
+                        ),
+                        new OA\Property(
+                            property: "prenom",
+                            description: "Prénom de l'utilisateur",
+                            type: "string"
+                        ),
+                        new OA\Property(
+                            property: "adresse",
+                            description: "Adresse de l'utilisateur",
+                            type: "string"
+                        ),
+                        new OA\Property(
+                            property: "code_postal",
+                            description: "Code postal de l'utilisateur",
+                            type: "string"
+                        ),
+                        new OA\Property(
+                            property: "ville",
+                            description: "Ville de l'utilisateur",
+                            type: "string"
+                        ),
+                        new OA\Property(
+                            property: "email",
+                            description: "Adresse email de l'utilisateur",
+                            type: "string"
+                        ),
+                        new OA\Property(
+                            property: "password",
+                            description: "Mot de passe de l'utilisateur",
+                            type: "string"
+                        )
+                    ],
+                    type: "object"
+                )
+            )
+        ),
+        tags: ["Authentification"],
+        responses: [
+            new OA\Response(
+                response: "200",
+                description: "Utilisateur créé"
+            ),
+            new OA\Response(
+                response: "401",
+                description: "Non autorisé"
+            )
+        ]
+    )]
+    public function register(Request $request)
+    {
 
         DB::beginTransaction();
         $request->validate([
@@ -72,7 +192,6 @@ class AuthController extends Controller
         DB::commit();
 
 
-
         $credentials = $request->only('email', 'password');
         $token = JWTAuth::attempt($credentials);
 
@@ -87,7 +206,23 @@ class AuthController extends Controller
         ], 201);
     }
 
-    public function logout(){
+    #[OA\Get(
+        path: "/user",
+        description: "Se déconnecte l'utilisateur connecté",
+        tags: ["Authentification"],
+        responses: [
+            new OA\Response(
+                response: "200",
+                description: "Utilisateur connecté"
+            ),
+            new OA\Response(
+                response: "401",
+                description: "Non autorisé"
+            )
+        ]
+    )]
+    public function logout()
+    {
         Auth::logout();
         return response()->json([
             'status' => 'success',
@@ -95,7 +230,23 @@ class AuthController extends Controller
         ]);
     }
 
-    public function refresh(){
+    #[OA\Get(
+        path: "/refresh",
+        description: "Rafraîchit le token de l'utilisateur connecté",
+        tags: ["Authentification"],
+        responses: [
+            new OA\Response(
+                response: "200",
+                description: "Token rafraîchi"
+            ),
+            new OA\Response(
+                response: "401",
+                description: "Non autorisé"
+            )
+        ]
+    )]
+    public function refresh()
+    {
         return response()->json([
             'status' => 'success',
             'user' => Auth::user(),
