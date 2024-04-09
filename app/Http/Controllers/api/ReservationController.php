@@ -4,6 +4,8 @@ namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ReservationRequest;
+use App\Jobs\ExportBillet;
+use App\Jobs\SendValidationPaiement;
 use App\Models\Billet;
 use App\Models\Client;
 use App\Models\Prix;
@@ -77,8 +79,8 @@ class ReservationController extends Controller
     public function store(ReservationRequest $request, $id){
         $user = Auth::user();
         $client = $user->client;
-        $prix = Prix::query()->where('categorie', $request->categorie)->first()->valeur;
-        $montant = $prix * $request->nb_billets;
+        $prix = Prix::query()->where('categorie', $request->categorie)->first();
+        $montant = $prix->valeur * $request->nb_billets;
 
         $reservation = new Reservation();
         $reservation->date_res = now();
@@ -96,9 +98,16 @@ class ReservationController extends Controller
         }
         $reservation->save();
 
+        $billet = new Billet();
+        $billet->quantite = $reservation->nb_billets;
+        $billet->reservation_id = $reservation->id;
+        $billet->prix_id = $prix->id;
+        $billet->save();
+
         return response()->json([
             'status' => 'success',
-            'reservation' => $reservation
+            'reservation' => $reservation,
+            'billet_id' => $billet->id
         ]);
     }
 
@@ -132,5 +141,58 @@ class ReservationController extends Controller
             'status' => 'success',
             'reservation' => $reservation
         ]);
+    }
+
+    public function updateState(Request $request, $id){
+        $request->validate([
+            'statut' => 'required|string|max:13'
+        ]);
+
+        $reservation = Reservation::find($id);
+        $user = Auth::user();
+        $client = $user->client;
+
+        if($reservation->client_id != $client->id){
+            return response()->json(['error' => 'You can only modify your own reservations.'], 403);
+        }
+        if($reservation->statut == Statut::EN_ATTENTE){
+            if($request->statut == Statut::PAYE){
+                $reservation->statut = Statut::PAYE;
+                $reservation->save();
+
+                SendValidationPaiement::dispatch($user);
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Reservation paid successfully',
+                    'reservation' => $reservation
+                ]);
+            }
+            else{
+                return response()->json(['error' => 'You can only change the status to "payé"'], 403);
+            }
+        }
+        elseif($reservation->statut == Statut::PAYE){
+            if($request->statut == Statut::BILLET_EDITE){
+                $reservation->statut = Statut::BILLET_EDITE;
+                $reservation->save();
+
+                $billet = Billet::query()->where('reservation_id', $reservation->id)->first();
+
+                ExportBillet::dispatch($billet, $user);
+
+                return response()->json([
+                    'status' => 'success',
+                    'message' => 'Ticket edited successfully',
+                    'reservation' => $reservation
+                ]);
+            }
+            else{
+                return response()->json(['error' => 'You can only change the status to "billet édité"'], 403);
+            }
+        }
+        else{
+            return response()->json(['error' => 'You can only modify reservations in the "En-attente" or "Payé" state.'], 403);
+        }
+
     }
 }

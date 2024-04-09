@@ -10,4 +10,9 @@ class Billet extends Model
     use HasFactory;
     public $timestamps = false;
     protected $fillable = ['quantite', 'prix_id', 'reservation_id'];
+
+    public function reservation()
+    {
+        return $this->belongsTo(Reservation::class);
+    }
 }
