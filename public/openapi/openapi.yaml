@@ -1,0 +1,418 @@
+openapi: 3.0.0
+info:
+  title: 'API G-10'
+  description: "API de la SAE G-10. Pour l'utiliser, il faut se connecter avec un compte utilisateur et obtenir un token d'authentification. Ensuite, il faut ajouter ce token dans la section Authentification."
+  version: 1.0.0
+servers:
+  -
+    url: 'http://localhost:8000/api'
+paths:
+  /login:
+    post:
+      tags:
+        - Authentification
+      description: 'Connecte un utilisateur'
+      operationId: 1da689c688cc418e88f9e9d668f01b16
+      requestBody:
+        description: "Les informations de connexion de l'utilisateur"
+        content:
+          application/json:
+            schema:
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  description: "Adresse email de l'utilisateur"
+                  type: string
+                password:
+                  description: "Mot de passe de l'utilisateur"
+                  type: string
+              type: object
+      responses:
+        '200':
+          description: 'Utilisateur connecté'
+          content:
+            application/json:
+              schema:
+                properties:
+                  token: { description: "Jeton d'authentification JWT", type: string }
+                type: object
+        '401':
+          description: 'Non autorisé'
+  /register:
+    post:
+      tags:
+        - Authentification
+      description: 'Enregistre un nouvel utilisateur'
+      operationId: c758f54bda9079f9ebe361693213d40c
+      requestBody:
+        description: "Les informations de connexion de l'utilisateur"
+        required: true
+        content:
+          application/json:
+            schema:
+              required:
+                - nom
+                - prenom
+                - adresse
+                - code_postal
+                - ville
+                - email
+                - password
+              properties:
+                nom:
+                  description: "Nom de l'utilisateur"
+                  type: string
+                prenom:
+                  description: "Prénom de l'utilisateur"
+                  type: string
+                adresse:
+                  description: "Adresse de l'utilisateur"
+                  type: string
+                code_postal:
+                  description: "Code postal de l'utilisateur"
+                  type: string
+                ville:
+                  description: "Ville de l'utilisateur"
+                  type: string
+                email:
+                  description: "Adresse email de l'utilisateur"
+                  type: string
+                password:
+                  description: "Mot de passe de l'utilisateur"
+                  type: string
+              type: object
+      responses:
+        '200':
+          description: 'Utilisateur créé'
+        '401':
+          description: 'Non autorisé'
+  /user:
+    get:
+      tags:
+        - Authentification
+      description: "Se déconnecte l'utilisateur connecté"
+      operationId: 7162e217cedb565bfc023a06d437ffa5
+      responses:
+        '200':
+          description: 'Utilisateur connecté'
+        '401':
+          description: 'Non autorisé'
+  /refresh:
+    get:
+      tags:
+        - Authentification
+      description: "Rafraîchit le token de l'utilisateur connecté"
+      operationId: 2f339b146faea0a9f0245caef7d52107
+      responses:
+        '200':
+          description: 'Token rafraîchi'
+        '401':
+          description: 'Non autorisé'
+  /profil:
+    get:
+      tags:
+        - Client
+      description: 'Récupère le profil du client'
+      operationId: 1825fa62241313dd09e00cd5bc4a9d14
+      responses:
+        '200':
+          description: 'Profil du client'
+        '404':
+          description: 'Client non trouvé'
+  /clients:
+    get:
+      tags:
+        - Client
+      description: 'Récupère la liste des clients'
+      operationId: 62bbf3d7e2c130391994c9f22fe5534e
+      parameters:
+        -
+          name: search
+          in: query
+          description: 'Rechercher par nom'
+          required: false
+          schema:
+            type: string
+        -
+          name: sort
+          in: query
+          description: 'Trier par nom ou ville'
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'Liste des clients'
+        '404':
+          description: 'Aucun client trouvé'
+  '/clients/{id}':
+    get:
+      tags:
+        - Client
+      description: 'Récupère le client par son ID'
+      operationId: cce02351b4e36b00e12f4503faa9d486
+      responses:
+        '200':
+          description: 'Client trouvé'
+        '404':
+          description: 'Client non trouvé'
+    put:
+      tags:
+        - Client
+      description: 'Mettre à jour le client'
+      operationId: ed46ad7ebce2bffa44c3d50b5218f4de
+      parameters:
+        -
+          name: nom
+          in: query
+          description: 'Nom du client'
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'Client mis à jour'
+        '404':
+          description: 'Client non trouvé'
+  /evenements:
+    get:
+      tags:
+        - Evenements
+      description: 'Récupère la liste des événements'
+      operationId: 78fa335947f05269e6c380cab4abaa9c
+      parameters:
+        -
+          name: type
+          in: query
+          description: "Type de l'événement"
+          required: false
+          schema:
+            type: string
+        -
+          name: lieu
+          in: query
+          description: "Lieu de l'événement"
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'Liste des événements'
+        '404':
+          description: 'Aucun événement trouvé'
+    post:
+      tags:
+        - Evenements
+      description: 'Crée un événement'
+      operationId: dd762bcbe5f1c9a8964e8950856074a7
+      parameters:
+        -
+          name: titre
+          in: query
+          description: "Titre de l'événement"
+          required: true
+          schema:
+            type: string
+        -
+          name: description
+          in: query
+          description: "Description de l'événement"
+          required: true
+          schema:
+            type: string
+        -
+          name: date_event
+          in: query
+          description: "Date de l'événement"
+          required: true
+          schema:
+            type: string
+        -
+          name: lieu_id
+          in: query
+          description: "Lieu de l'événement"
+          required: true
+          schema:
+            type: integer
+      responses:
+        '201':
+          description: 'Evénement créé avec succès'
+        '422':
+          description: 'Erreur de validation'
+  '/evenements/{id}':
+    get:
+      tags:
+        - Evenements
+      description: 'Récupère un événement'
+      operationId: 1bb284cafc3285decc946b651ac14928
+      parameters:
+        -
+          name: id
+          in: path
+          description: "Identifiant unique de l'événement"
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'Evénement trouvé'
+        '404':
+          description: 'Evénement non trouvé'
+    put:
+      tags:
+        - Evenements
+      description: 'Mettre à jour un événement'
+      operationId: ddc7d8c0e074964fddf00821812a7cc8
+      parameters:
+        -
+          name: titre
+          in: query
+          description: "Titre de l'événement"
+          required: false
+          schema:
+            type: string
+        -
+          name: description
+          in: query
+          description: "Description de l'événement"
+          required: false
+          schema:
+            type: string
+        -
+          name: date_event
+          in: query
+          description: "Date de l'événement"
+          required: false
+          schema:
+            type: string
+        -
+          name: lieu_id
+          in: query
+          description: "Lieu de l'événement"
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Evénement mis à jour'
+        '404':
+          description: 'Evénement non trouvé'
+    post:
+      tags:
+        - Evenements
+      description: 'Crée un prix pour un événement'
+      operationId: 696aab9634515272d7fad7f7d9b72279
+      parameters:
+        -
+          name: categorie
+          in: query
+          description: 'Catégorie du prix'
+          required: true
+          schema:
+            type: string
+        -
+          name: nombre
+          in: query
+          description: 'Nombre de places'
+          required: true
+          schema:
+            type: integer
+        -
+          name: valeur
+          in: query
+          description: 'Valeur du prix'
+          required: true
+          schema:
+            type: number
+      responses:
+        '201':
+          description: 'Prix créé avec succès'
+        '422':
+          description: 'Erreur de validation'
+    delete:
+      tags:
+        - Evenements
+      description: 'Supprime un événement'
+      operationId: bb0b79e253d0510e1556f3ca79fad081
+      parameters:
+        -
+          name: id
+          in: path
+          description: "Identifiant unique de l'événement"
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'Prix supprimé'
+        '404':
+          description: 'Prix non trouvé'
+  /lieux:
+    get:
+      tags:
+        - Lieux
+      description: 'Récupère la liste des lieux'
+      operationId: 3bf9c44f594ef5ea432f0c14d8901ff2
+      responses:
+        '200':
+          description: 'Liste des lieux'
+        '404':
+          description: 'Aucun lieu trouvé'
+  /reservations:
+    get:
+      tags:
+        - Reservations
+      description: 'Récupère la liste des réservations'
+      operationId: 9132b015597ef7b4259bf53cfb8e651a
+      responses:
+        '200':
+          description: 'Liste des réservations'
+        '404':
+          description: 'Aucune réservation trouvée'
+  '/reservations/{id}':
+    get:
+      tags:
+        - Reservations
+      description: "Récupère la liste des réservations d'un événement"
+      operationId: 6456e914ef6bcdf82229cbd36a5c565f
+      parameters:
+        -
+          name: id
+          in: path
+          description: "ID de l'événement"
+          required: true
+          schema:
+            type: integer
+        -
+          name: debut
+          in: query
+          description: 'Date de début'
+          schema:
+            type: date
+        -
+          name: fin
+          in: query
+          description: 'Date de fin'
+          schema:
+            type: date
+        -
+          name: client_id
+          in: query
+          description: 'ID du client'
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Liste des réservations'
+        '404':
+          description: 'Aucune réservation trouvée'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      bearerFormat: JWT
+      scheme: bearer
