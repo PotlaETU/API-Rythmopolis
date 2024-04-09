@@ -144,7 +144,13 @@ paths:
             type: string
       responses:
         '200':
-          description: 'Liste des clients'
+          content:
+            application/json:
+              schema:
+                properties:
+                  status: { type: string }
+                  clients: { type: array, items: { $ref: '#/components/schemas/Client' } }
+                type: object
         '404':
           description: 'Aucun client trouvé'
   '/clients/{id}':
@@ -153,9 +159,24 @@ paths:
         - Client
       description: 'Récupère le client par son ID'
       operationId: cce02351b4e36b00e12f4503faa9d486
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID du client'
+          required: true
+          schema:
+            type: integer
       responses:
         '200':
-          description: 'Client trouvé'
+          content:
+            application/json:
+              schema:
+                properties:
+                  status: { type: string }
+                  client: { $ref: '#/components/schemas/Client' }
+                  user: { $ref: '#/components/schemas/User' }
+                type: object
         '404':
           description: 'Client non trouvé'
     put:
@@ -163,17 +184,26 @@ paths:
         - Client
       description: 'Mettre à jour le client'
       operationId: ed46ad7ebce2bffa44c3d50b5218f4de
-      parameters:
-        -
-          name: nom
-          in: query
-          description: 'Nom du client'
-          required: false
-          schema:
-            type: string
+      requestBody:
+        description: 'Données à mettre à jour'
+        required: true
+        content:
+          application/json:
+            schema:
+              properties:
+                client:
+                  $ref: '#/components/schemas/Client'
+              type: object
       responses:
         '200':
-          description: 'Client mis à jour'
+          content:
+            application/json:
+              schema:
+                properties:
+                  status: { type: string }
+                  client: { $ref: '#/components/schemas/Client' }
+                  user: { $ref: '#/components/schemas/User' }
+                type: object
         '404':
           description: 'Client non trouvé'
   /evenements:
@@ -351,6 +381,53 @@ paths:
           description: 'Prix supprimé'
         '404':
           description: 'Prix non trouvé'
+  '/evenements/{id}/updateParticipants':
+    put:
+      tags:
+        - Evenements
+      description: 'Récupère la liste des participants à un événement'
+      operationId: 894d7f8ac0762469e2bb422f6d710d4b
+      parameters:
+        -
+          name: id
+          in: path
+          description: "Identifiant unique de l'événement"
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 'Liste des participants'
+        '404':
+          description: 'Aucun participant trouvé'
+  '/evenements/{id}/prix':
+    get:
+      tags:
+        - Evenements
+      description: "Récupère la liste des prix d'un événement"
+      operationId: 6454c72272b5d8d659513c8541a05a51
+      parameters:
+        -
+          name: id
+          in: path
+          description: "Identifiant unique de l'événement"
+          required: true
+          schema:
+            type: integer
+            format: int64
+        -
+          name: categorie
+          in: query
+          description: 'Catégorie du prix'
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'Liste des prix'
+        '404':
+          description: 'Aucun prix trouvé'
   /lieux:
     get:
       tags:
@@ -411,6 +488,155 @@ paths:
         '404':
           description: 'Aucune réservation trouvée'
 components:
+  schemas:
+    Artiste:
+      title: Artiste
+      properties:
+        id:
+          description: "Identifiant unique de l'artiste"
+          type: integer
+          format: int64
+        nom:
+          description: "Nom de l'artiste"
+          type: string
+        genre:
+          description: "Genre musical de l'artiste"
+          type: string
+      type: object
+    Billet:
+      title: Billet
+      properties:
+        id:
+          description: 'Identifiant unique du billet'
+          type: integer
+          format: int64
+        quantite:
+          description: 'Quantité de billets'
+          type: integer
+        prix_id:
+          description: 'Identifiant du prix du billet'
+          type: integer
+        reservation_id:
+          description: 'Identifiant de la réservation du billet'
+          type: integer
+      type: object
+    Client:
+      title: Client
+      properties:
+        id:
+          description: 'Identifiant unique du client'
+          type: integer
+          format: int64
+        user_id:
+          description: "Identifiant de l'utilisateur du client"
+          type: integer
+        nom:
+          description: 'Nom du client'
+          type: string
+        prenom:
+          description: 'Prénom du client'
+          type: string
+        telephone:
+          description: 'Numéro de téléphone du client'
+          type: string
+        adresse:
+          description: 'Adresse du client'
+          type: string
+        code_postal:
+          description: 'Code postal du client'
+          type: string
+        ville:
+          description: 'Ville du client'
+          type: string
+        pays:
+          description: 'Pays du client'
+          type: string
+      type: object
+    Evenement:
+      title: Evenement
+      properties:
+        id:
+          description: "Identifiant unique de l'événement"
+          type: integer
+          format: int64
+        titre:
+          description: "Titre de l'événement"
+          type: string
+        description:
+          description: "Description de l'événement"
+          type: string
+        date_event:
+          description: "Date de l'événement"
+          type: string
+          format: date
+        lieu_id:
+          description: "Identifiant du lieu de l'événement"
+          type: integer
+          format: int64
+      type: object
+    Genre:
+      title: Genre
+      properties:
+        id:
+          description: 'Identifiant unique du genre'
+          type: integer
+          format: int64
+        nom:
+          description: 'Nom du genre'
+          type: string
+      type: object
+    Lieux:
+      title: Lieux
+      properties:
+        id:
+          description: 'Identifiant unique du lieu'
+          type: integer
+          format: int64
+        nom:
+          description: 'Nom du lieu'
+          type: string
+        adresse:
+          description: 'Adresse du lieu'
+          type: string
+        code_postal:
+          description: 'Code postal du lieu'
+          type: string
+        ville:
+          description: 'Ville du lieu'
+          type: string
+        lat:
+          description: 'Latitude du lieu'
+          type: number
+          format: float
+        long:
+          description: 'Longitude du lieu'
+          type: number
+          format: float
+      type: object
+    User:
+      title: User
+      properties:
+        id:
+          description: "Identifiant unique de l'utilisateur"
+          type: integer
+          format: int64
+        name:
+          description: "Nom de l'utilisateur"
+          type: string
+        email:
+          description: "Adresse email de l'utilisateur"
+          type: string
+        email_verified_at:
+          description: "Date de vérification de l'adresse email"
+          type: string
+          format: date-time
+        password:
+          description: "Mot de passe de l'utilisateur"
+          type: string
+        remember_token:
+          description: 'Jeton de connexion'
+          type: string
+      type: object
   securitySchemes:
     bearerAuth:
       type: http
