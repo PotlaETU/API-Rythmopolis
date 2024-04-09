@@ -101,4 +101,36 @@ class ReservationController extends Controller
             'reservation' => $reservation
         ]);
     }
+
+    public function update(Request $request, $id){
+        $user = Auth::user();
+        $reservation = Reservation::find($id);
+
+        if ($reservation->statut != Statut::EN_ATTENTE) {
+            return response()->json(['error' => 'Only reservations in the "En-attente" state can be modified.'], 403);
+        }
+
+        if ($user->role == Role::ACTIF && $reservation->client_id != $user->client->id) {
+            return response()->json(['error' => 'You can only modify your own reservations.'], 403);
+        }
+
+        $request->validate([
+            'nb_billets' => 'integer',
+            'categorie' => 'string',
+        ]);
+
+        $prix = Prix::query()->where('categorie', $request->categorie)->first()->valeur;
+        $montant = $prix * $request->nb_billets;
+
+        $reservation->date_res = now();
+        $reservation->nb_billets = $request->nb_billets ?? $reservation->nb_billets;
+        $reservation->evenement_id = $request->evenement_id ?? $reservation->evenement_id;
+        $reservation->montant = $montant;
+        $reservation->save();
+
+        return response()->json([
+            'status' => 'success',
+            'reservation' => $reservation
+        ]);
+    }
 }
