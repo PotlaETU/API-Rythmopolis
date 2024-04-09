@@ -15,4 +15,9 @@ class Billet extends Model
     {
         return $this->belongsTo(Reservation::class);
     }
+
+    public function prix()
+    {
+        return $this->belongsTo(Prix::class);
+    }
 }
