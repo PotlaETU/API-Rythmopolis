@@ -133,7 +133,7 @@ class EvenementController extends Controller
 
     public function indexPrix(Request $request, $id){
         $evenement = Evenement::find($id);
-        $query = $evenement->prix()->select('categorie', DB::raw('prix.nombre - COALESCE((SELECT SUM(quantite) FROM billets WHERE billets.prix_id = prix.id), 0) as nombre_places'));
+        $query = $evenement->prix()->select('categorie', 'valeur', DB::raw('prix.nombre - COALESCE((SELECT SUM(quantite) FROM billets WHERE billets.prix_id = prix.id), 0) as nombre_places'));
 
 
         if($request->has('categorie')){
