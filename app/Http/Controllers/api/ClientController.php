@@ -9,9 +9,27 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use function PHPUnit\Framework\isEmpty;
 use function Webmozart\Assert\Tests\StaticAnalysis\inArray;
+use OpenApi\Attributes as OA;
+
 
 class ClientController extends Controller
 {
+
+    #[OA\Get(
+        path: "/profil",
+        description: "Récupère le profil du client",
+        tags: ["Client"],
+        responses: [
+            new OA\Response(
+                response: "200",
+                description: "Profil du client",
+            ),
+            new OA\Response(
+                response: "404",
+                description: "Client non trouvé",
+            )
+        ]
+    )]
     public function profil(Request $request)
     {
         $user = $request->user();
@@ -31,6 +49,52 @@ class ClientController extends Controller
         ]);
     }
 
+    #[OA\Get(
+        path: "/clients",
+        description: "Récupère la liste des clients",
+        tags: ["Client"],
+        parameters:[
+            new OA\Parameter(
+                name: "search",
+                description: "Rechercher par nom",
+                in: "query",
+                required: false,
+                schema: new OA\Schema(type: "string")
+            ),
+            new OA\Parameter(
+                name: "sort",
+                description: "Trier par nom ou ville",
+                in: "query",
+                required: false,
+                schema: new OA\Schema(type: "string")
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: "200",
+                content: new OA\MediaType(
+                    mediaType: "application/json",
+                    schema: new OA\Schema(
+                        properties: [
+                            new OA\Property(
+                                property: "status",
+                                type: "string"
+                            ),
+                            new OA\Property(
+                                property: "clients",
+                                type: "array",
+                                items: new OA\Items(ref: "#/components/schemas/Client")
+                            )
+                        ]
+                    )
+                ),
+            ),
+            new OA\Response(
+                response: "404",
+                description: "Aucun client trouvé",
+            )
+        ]
+    )]
     public function index(Request $request){
 
         if(empty($request->all())){
@@ -64,6 +128,48 @@ class ClientController extends Controller
         ]);
     }
 
+    #[OA\Get(
+        path: "/clients/{id}",
+        description: "Récupère le client par son ID",
+        tags: ["Client"],
+        parameters: [
+            new OA\Parameter(
+                name: "id",
+                description: "ID du client",
+                in: "path",
+                required: true,
+                schema: new OA\Schema(type: "integer")
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: "200",
+                content: new OA\MediaType(
+                    mediaType: "application/json",
+                    schema: new OA\Schema(
+                        properties: [
+                            new OA\Property(
+                                property: "status",
+                                type: "string"
+                            ),
+                            new OA\Property(
+                                property: "client",
+                                ref: "#/components/schemas/Client"
+                            ),
+                            new OA\Property(
+                                property: "user",
+                                ref: "#/components/schemas/User"
+                            ),
+                        ]
+                    )
+                ),
+            ),
+            new OA\Response(
+                response: "404",
+                description: "Client non trouvé",
+            )
+        ]
+    )]
     public function show($id)
     {
         $client = Client::find($id);
@@ -84,6 +190,55 @@ class ClientController extends Controller
         }
     }
 
+    #[OA\Put(
+        path: "/clients/{id}",
+        description: "Mettre à jour le client",
+        requestBody: new OA\RequestBody(
+            description: "Données à mettre à jour",
+            required: true,
+            content: new OA\MediaType(
+                mediaType: "application/json",
+                schema: new OA\Schema(
+                    properties: [
+                        new OA\Property(
+                            property: "client",
+                            ref: "#/components/schemas/Client"
+                        ),
+                    ],
+                    type: "object"
+                )
+            )
+        ),
+        tags: ["Client"],
+        responses: [
+            new OA\Response(
+                response: "200",
+                content: new OA\MediaType(
+                    mediaType: "application/json",
+                    schema: new OA\Schema(
+                        properties: [
+                            new OA\Property(
+                                property: "status",
+                                type: "string"
+                            ),
+                            new OA\Property(
+                                property: "client",
+                                ref: "#/components/schemas/Client"
+                            ),
+                            new OA\Property(
+                                property: "user",
+                                ref: "#/components/schemas/User"
+                            )
+                        ]
+                    )
+                ),
+            ),
+            new OA\Response(
+                response: "404",
+                description: "Client non trouvé",
+            )
+        ]
+    )]
     public function update(Request $request, $id)
     {
         $client = Client::find($id);
