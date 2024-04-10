@@ -4,8 +4,6 @@ namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ReservationRequest;
-use App\Jobs\ExportBillet;
-use App\Jobs\SendValidationPaiement;
 use App\Models\Billet;
 use App\Models\Client;
 use App\Models\Prix;
