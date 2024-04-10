@@ -4,7 +4,12 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use OpenApi\Attributes as OA;
 
+#[OA\Schema(title: 'Genre', properties: [
+    new OA\Property(property: 'id', description: 'Identifiant unique du genre', type: 'integer', format: 'int64'),
+    new OA\Property(property: 'nom', description: 'Nom du genre', type: 'string'),
+])]
 class Genre extends Model
 {
     use HasFactory;
