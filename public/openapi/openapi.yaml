@@ -487,6 +487,83 @@ paths:
           description: 'Liste des réservations'
         '404':
           description: 'Aucune réservation trouvée'
+    put:
+      tags:
+        - Reservations
+      description: 'Modifie une réservation'
+      operationId: 9b923615b414fe5c628195402d9ca4ea
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID de la réservation'
+          required: true
+          schema:
+            type: integer
+        -
+          name: nb_billets
+          in: query
+          description: 'Nombre de billets'
+          schema:
+            type: integer
+        -
+          name: categorie
+          in: query
+          description: Catégorie
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 'Réservation modifiée'
+        '403':
+          description: 'Vous ne pouvez pas modifier cette réservation'
+    post:
+      tags:
+        - Reservations
+      description: 'Crée une nouvelle réservation'
+      operationId: 677e4c4e2a46cc280a1b4aa1cd711ca5
+      parameters:
+        -
+          name: id
+          in: path
+          description: "ID de l'événement"
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Réservation créée'
+        '403':
+          description: 'Vous ne pouvez pas créer de réservation pour cet événement'
+    delete:
+      tags:
+        - Reservations
+      description: 'Supprime une réservation'
+      operationId: fd37350ab045220764953ed6828c9f73
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'ID de la réservation'
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: 'Réservation supprimée'
+        '403':
+          description: 'Vous ne pouvez pas supprimer cette réservation'
+  /reservations/statistiques:
+    get:
+      tags:
+        - Reservations
+      description: 'Récupère les statistiques des réservations'
+      operationId: 9c40b1ed1fee616e57cdb4158d61d5a7
+      responses:
+        '200':
+          description: 'Statistiques des réservations'
+        '404':
+          description: 'Aucune réservation trouvée'
 components:
   schemas:
     Artiste:

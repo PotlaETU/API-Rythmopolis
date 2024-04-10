@@ -136,6 +136,30 @@ class ReservationController extends Controller
         ]);
     }
 
+    #[OA\Post(
+        path: "/reservations/{id}",
+        description: "Crée une nouvelle réservation",
+        tags: ["Reservations"],
+        parameters:[
+            new OA\Parameter(
+                name: "id",
+                description: "ID de l'événement",
+                in: "path",
+                required: true,
+                schema: new OA\Schema(type: "integer")
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: "200",
+                description: "Réservation créée",
+            ),
+            new OA\Response(
+                response: "403",
+                description: "Vous ne pouvez pas créer de réservation pour cet événement",
+            )
+        ]
+    )]
     public function store(ReservationRequest $request, $id){
         $user = Auth::user();
         $client = $user->client;
@@ -171,6 +195,42 @@ class ReservationController extends Controller
         ]);
     }
 
+    #[OA\Put(
+        path: "/reservations/{id}",
+        description: "Modifie une réservation",
+        tags: ["Reservations"],
+        parameters:[
+            new OA\Parameter(
+                name: "id",
+                description: "ID de la réservation",
+                in: "path",
+                required: true,
+                schema: new OA\Schema(type: "integer")
+            ),
+            new OA\Parameter(
+                name: "nb_billets",
+                description: "Nombre de billets",
+                in: "query",
+                schema: new OA\Schema(type: "integer")
+            ),
+            new OA\Parameter(
+                name: "categorie",
+                description: "Catégorie",
+                in: "query",
+                schema: new OA\Schema(type: "string")
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: "200",
+                description: "Réservation modifiée",
+            ),
+            new OA\Response(
+                response: "403",
+                description: "Vous ne pouvez pas modifier cette réservation",
+            )
+        ]
+    )]
     public function update(Request $request, $id){
         $user = Auth::user();
         $reservation = Reservation::find($id);
@@ -203,6 +263,30 @@ class ReservationController extends Controller
         ]);
     }
 
+    #[OA\Delete(
+        path: "/reservations/{id}",
+        description: "Supprime une réservation",
+        tags: ["Reservations"],
+        parameters:[
+            new OA\Parameter(
+                name: "id",
+                description: "ID de la réservation",
+                in: "path",
+                required: true,
+                schema: new OA\Schema(type: "integer")
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: "200",
+                description: "Réservation supprimée",
+            ),
+            new OA\Response(
+                response: "403",
+                description: "Vous ne pouvez pas supprimer cette réservation",
+            )
+        ]
+    )]
     public function updateState(Request $request, $id){
         $request->validate([
             'statut' => 'required|string|max:13'
@@ -256,6 +340,21 @@ class ReservationController extends Controller
 
     }
 
+    #[OA\Get(
+        path: "/reservations/statistiques",
+        description: "Récupère les statistiques des réservations",
+        tags: ["Reservations"],
+        responses: [
+            new OA\Response(
+                response: "200",
+                description: "Statistiques des réservations",
+            ),
+            new OA\Response(
+                response: "404",
+                description: "Aucune réservation trouvée",
+            )
+        ]
+    )]
     public function statistiques(){
         $reservations = Reservation::all();
 
