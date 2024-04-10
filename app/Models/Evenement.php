@@ -4,7 +4,15 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use OpenApi\Attributes as OA;
 
+#[OA\Schema(title: 'Evenement', properties: [
+    new OA\Property(property: 'id', description: 'Identifiant unique de l\'événement', type: 'integer', format: 'int64'),
+    new OA\Property(property: 'titre', description: 'Titre de l\'événement', type: 'string'),
+    new OA\Property(property: 'description', description: 'Description de l\'événement', type: 'string'),
+    new OA\Property(property: 'date_event', description: 'Date de l\'événement', type: 'string', format: 'date'),
+    new OA\Property(property: 'lieu_id', description: 'Identifiant du lieu de l\'événement', type: 'integer', format: 'int64'),
+])]
 class Evenement extends Model
 {
     use HasFactory;
@@ -30,5 +38,15 @@ class Evenement extends Model
 
     public function reservations(){
         return $this->hasMany(Reservation::class);
+    }
+
+    public function getTotalPlacesByCategory($categorie){
+        $total = 0;
+        foreach ($this->prix as $prix) {
+            if($prix->categorie == $categorie){
+                $total += $prix->quantite;
+            }
+        }
+        return $total;
     }
 }

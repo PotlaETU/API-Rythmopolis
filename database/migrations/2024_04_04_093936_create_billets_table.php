@@ -12,6 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('billets', function (Blueprint $table) {
+            $table->id();
             $table->integer('quantite');
             $table->foreignId('prix_id')->constrained('prix')
                 ->onUpdate('cascade')

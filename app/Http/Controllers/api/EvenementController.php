@@ -13,9 +13,42 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use function Laravel\Prompts\select;
+use OpenApi\Attributes as OA;
 
 class EvenementController extends Controller
 {
+    #[OA\Get(
+        path: "/evenements",
+        description: "Récupère la liste des événements",
+        tags: ["Evenements"],
+        parameters:[
+            new OA\Parameter(
+                name: "type",
+                description: "Type de l'événement",
+                in: "query",
+                required: false,
+                schema: new OA\Schema(type: "string")
+            ),
+            new OA\Parameter(
+                name: "lieu",
+                description: "Lieu de l'événement",
+                in: "query",
+                required: false,
+                schema: new OA\Schema(type: "string")
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: "200",
+                description: "Liste des événements",
+            ),
+            new OA\Response(
+                response: "404",
+                description: "Aucun événement trouvé",
+            )
+        ]
+    ),]
+
     public function index(Request $request){
         $query = Evenement::query();
 
@@ -45,6 +78,30 @@ class EvenementController extends Controller
 
     }
 
+    #[OA\Get(
+        path: "/evenements/{id}",
+        description: "Récupère un événement",
+        tags: ["Evenements"],
+        parameters:[
+            new OA\Parameter(
+                name: "id",
+                description: "Identifiant unique de l'événement",
+                in: "path",
+                required: true,
+                schema: new OA\Schema(type: "integer", format: "int64")
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: "200",
+                description: "Evénement trouvé",
+            ),
+            new OA\Response(
+                response: "404",
+                description: "Evénement non trouvé",
+            )
+        ]
+    )]
     public function show($id){
         $evenement = Evenement::with(['lieu', 'artistes' => function ($query){
             $query->orderBy('id', 'asc');
@@ -65,6 +122,51 @@ class EvenementController extends Controller
         ]);
     }
 
+    #[OA\Post(
+        path: "/evenements",
+        description: "Crée un événement",
+        tags: ["Evenements"],
+        parameters: [
+            new OA\Parameter(
+                name: "titre",
+                description: "Titre de l'événement",
+                in: "query",
+                required: true,
+                schema: new OA\Schema(type: "string")
+            ),
+            new OA\Parameter(
+                name: "description",
+                description: "Description de l'événement",
+                in: "query",
+                required: true,
+                schema: new OA\Schema(type: "string")
+            ),
+            new OA\Parameter(
+                name: "date_event",
+                description: "Date de l'événement",
+                in: "query",
+                required: true,
+                schema: new OA\Schema(type: "string")
+            ),
+            new OA\Parameter(
+                name: "lieu_id",
+                description: "Lieu de l'événement",
+                in: "query",
+                required: true,
+                schema: new OA\Schema(type: "integer")
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: "201",
+                description: "Evénement créé avec succès"
+            ),
+            new OA\Response(
+                response: "422",
+                description: "Erreur de validation"
+            )
+        ]
+    )]
     public function store(EvenementRequest $request){
 
         $evenement = new Evenement();
@@ -102,6 +204,50 @@ class EvenementController extends Controller
         ]);
     }
 
+    #[OA\Put(
+        path: "/evenements/{id}",
+        description: "Mettre à jour un événement",
+        tags: ["Evenements"],
+        parameters:[
+            new OA\Parameter(
+                name: "titre",
+                description: "Titre de l'événement",
+                in: "query",
+                required: false,
+                schema: new OA\Schema(type: "string")
+            ),
+            new OA\Parameter(
+                name: "description",
+                description: "Description de l'événement",
+                in: "query",
+                required: false,
+                schema: new OA\Schema(type: "string")
+            ),
+            new OA\Parameter(
+                name: "date_event",
+                description: "Date de l'événement",
+                in: "query",
+                required: false,
+                schema: new OA\Schema(type: "string")
+            ),
+            new OA\Parameter(
+                name: "lieu_id",
+                description: "Lieu de l'événement",
+                in: "query",
+                required: false,
+                schema: new OA\Schema(type: "integer")
+            )],
+        responses: [
+            new OA\Response(
+                response: "200",
+                description: "Evénement mis à jour",
+            ),
+            new OA\Response(
+                response: "404",
+                description: "Evénement non trouvé",
+            )
+        ]
+    )]
     public function update(Request $request, $id){
         $evenement = Evenement::find($id);
         $evenement->titre = $request->titre ?? $evenement->titre;
@@ -116,6 +262,30 @@ class EvenementController extends Controller
         ]);
     }
 
+    #[OA\Put(
+        path: "/evenements/{id}/updateParticipants",
+        description: "Récupère la liste des participants à un événement",
+        tags: ["Evenements"],
+        parameters:[
+            new OA\Parameter(
+                name: "id",
+                description: "Identifiant unique de l'événement",
+                in: "path",
+                required: true,
+                schema: new OA\Schema(type: "integer", format: "int64")
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: "200",
+                description: "Liste des participants",
+            ),
+            new OA\Response(
+                response: "404",
+                description: "Aucun participant trouvé",
+            )
+        ]
+    )]
     public function updateParticipants(Request $request, $id){
         $request->validate([
             'artistes' => 'required|array',
@@ -131,9 +301,40 @@ class EvenementController extends Controller
         ]);
     }
 
+    #[OA\Get(
+        path: "/evenements/{id}/prix",
+        description: "Récupère la liste des prix d'un événement",
+        tags: ["Evenements"],
+        parameters:[
+            new OA\Parameter(
+                name: "id",
+                description: "Identifiant unique de l'événement",
+                in: "path",
+                required: true,
+                schema: new OA\Schema(type: "integer", format: "int64")
+            ),
+            new OA\Parameter(
+                name: "categorie",
+                description: "Catégorie du prix",
+                in: "query",
+                required: false,
+                schema: new OA\Schema(type: "string")
+            )
+        ],
+        responses: [
+            new OA\Response(
+                response: "200",
+                description: "Liste des prix",
+            ),
+            new OA\Response(
+                response: "404",
+                description: "Aucun prix trouvé",
+            )
+        ]
+    )]
     public function indexPrix(Request $request, $id){
         $evenement = Evenement::find($id);
-        $query = $evenement->prix()->select('categorie', DB::raw('prix.nombre - COALESCE((SELECT SUM(quantite) FROM billets WHERE billets.prix_id = prix.id), 0) as nombre_places'));
+        $query = $evenement->prix()->select('categorie', 'valeur', DB::raw('prix.nombre - COALESCE((SELECT SUM(quantite) FROM billets WHERE billets.prix_id = prix.id), 0) as nombre_places'));
 
 
         if($request->has('categorie')){
@@ -149,6 +350,44 @@ class EvenementController extends Controller
         ]);
     }
 
+    #[OA\Post(
+        path: "/evenements/{id}",
+        description: "Crée un prix pour un événement",
+        tags: ["Evenements"],
+        parameters: [
+            new OA\Parameter(
+                name: "categorie",
+                description: "Catégorie du prix",
+                in: "query",
+                required: true,
+                schema: new OA\Schema(type: "string")
+            ),
+            new OA\Parameter(
+                name: "nombre",
+                description: "Nombre de places",
+                in: "query",
+                required: true,
+                schema: new OA\Schema(type: "integer")
+            ),
+            new OA\Parameter(
+                name: "valeur",
+                description: "Valeur du prix",
+                in: "query",
+                required: true,
+                schema: new OA\Schema(type: "number")
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: "201",
+                description: "Prix créé avec succès"
+            ),
+            new OA\Response(
+                response: "422",
+                description: "Erreur de validation"
+            )
+        ]
+    )]
     public function updatePrix(Request $request, $id, $idPrix){
         $request->validate([
             'categorie' => 'string|max:50',
@@ -177,6 +416,30 @@ class EvenementController extends Controller
         }
     }
 
+    #[OA\Delete(
+        path: "/evenements/{id}",
+        description: "Supprime un événement",
+        tags: ["Evenements"],
+        parameters:[
+            new OA\Parameter(
+                name: "id",
+                description: "Identifiant unique de l'événement",
+                in: "path",
+                required: true,
+                schema: new OA\Schema(type: "integer", format: "int64")
+            ),
+        ],
+        responses: [
+            new OA\Response(
+                response: "200",
+                description: "Prix supprimé",
+            ),
+            new OA\Response(
+                response: "404",
+                description: "Prix non trouvé",
+            )
+        ]
+    )]
     public function destroy($id){
         $evenement = Evenement::find($id);
         $evenement->delete();
