@@ -4,6 +4,7 @@ namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ReservationRequest;
+use App\Jobs\SendValidationPaiement;
 use App\Models\Billet;
 use App\Models\Client;
 use App\Models\Prix;
@@ -41,8 +42,9 @@ class ReservationController extends Controller
         $data = [];
         foreach ($reservations as $reservation) {
             $data[] = [
-                'etat' => $reservation->statut,
-                'date_reservation' => $reservation->date_res,
+                'id' => $reservation->id,
+                'statut' => $reservation->statut,
+                'date_res' => $reservation->date_res,
                 'nb_billets' => $reservation->nb_billets,
                 'montant' => $reservation->montant,
             ];
