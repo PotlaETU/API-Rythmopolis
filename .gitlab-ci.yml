@@ -11,7 +11,10 @@ before_script:
   - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
 build:
-    stage: build
+    stage:
+      - build
+    tags:
+      - qdev
     script:
       - composer install
       - cp .env.testing .env
@@ -21,6 +24,9 @@ build:
       - php artisan db:seed
 
 test:
-    stage: test
+    stage:
+      - test
+    tags:
+      - qdev
     script:
       - php artisan test
