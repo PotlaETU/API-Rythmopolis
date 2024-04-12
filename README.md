@@ -31,3 +31,7 @@ Nous avons utilisé **Docker Compose** pour utiliser en parallèle **Mailpit** (
 La commande va utiliser `Dockerfile` pour produire le conteneur pour l'API. Ensuite, le conteneur **Mailpit** est pull à partir de [axllent/mailpit](https://hub.docker.com/r/axllent/mailpit).
 
 (Nous n'avons pas utilisé le registre de l'université d'Artois car sur les machines de l'IUT, ça ne marchait pas . . .)
+
+### CI/CD
+
+Aucun runner n'est disponnible pour effectuer le pipeline (j'ai essayé de reprendre celui de qdev mais il faut gitlab-runner)
