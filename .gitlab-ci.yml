@@ -1,0 +1,26 @@
+image: php:8.1-fpm
+
+stages:
+  - build
+  - test
+
+before_script:
+  - apt-get update -yqq
+  - apt-get install -yqq git unzip libsqlite3-dev
+  - docker-php-ext-install mbstring pdo_sqlite zip
+  - curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+build:
+    stage: build
+    script:
+      - composer install
+      - cp .env.testing .env
+      - php artisan config:clear
+      - php artisan cache:clear
+      - php artisan migrate
+      - php artisan db:seed
+
+test:
+    stage: test
+    script:
+      - php artisan test
