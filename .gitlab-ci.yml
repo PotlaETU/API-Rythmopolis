@@ -1,4 +1,4 @@
-image: php:8.1-fpm
+image: dh-iutl.univ-artois.fr/php:8.1-fpm
 
 stages:
   - build
