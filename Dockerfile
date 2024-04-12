@@ -17,6 +17,7 @@ RUN touch database/database.sqlite
 RUN php artisan jwt:secret
 RUN php artisan migrate:fresh
 RUN php artisan db:seed
+RUN php artisan schedule:run
 
 EXPOSE 8000
 CMD php artisan serve --host=0.0.0.0 --port=8000
