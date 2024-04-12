@@ -10,11 +10,6 @@ RUN docker-php-ext-install pdo zip
 WORKDIR /srv
 COPY . /srv
 
-RUN tar -xvf archive-laravel.tar.gz
-
-WORKDIR /srv/serveurapi-develop
-
-
 RUN composer install
 RUN cp .env.example .env
 RUN php artisan key:generate
